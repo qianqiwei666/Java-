@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: qianqiwei
+
+  datasource:
+    username: root
+    password: qianqiwei
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///user?serverTimezone=UTC
+
+server:
+  port: 8081

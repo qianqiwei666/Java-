@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianqiwei.springsecuritydemo.mapper.UserMessageMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.qianqiwei.springsecuritydemo.pojo.UserMessage">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <resultMap id="AllResultMap" type="com.qianqiwei.springsecuritydemo.pojo.UserMessage">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <association property="userStatus" resultMap="userStatus"></association>
+    </resultMap>
+
+    <resultMap id="userStatus" type="com.qianqiwei.springsecuritydemo.pojo.UserStatus">
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="accountnonexpired" column="AccountNonExpired" jdbcType="TINYINT"/>
+        <result property="accountnonlocked" column="AccountNonLocked" jdbcType="TINYINT"/>
+        <result property="credentialsnonexpired" column="CredentialsNonExpired" jdbcType="TINYINT"/>
+        <result property="enabled" column="Enabled" jdbcType="TINYINT"/>
+    </resultMap>
+
+
+
+
+    <select id="selectMessageByUsername" resultMap="AllResultMap">
+        select  *from user_message
+                          left join user_status on user_message.id=user_status.user_id where username=#{username};
+    </select>
+
+    <sql id="Base_Column_List">
+        id
+        ,username,password
+    </sql>
+</mapper>

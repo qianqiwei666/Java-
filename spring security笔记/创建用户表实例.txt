@@ -1,0 +1,35 @@
+#     String getPassword();  //获取密码
+#
+#     String getUsername();  //获取用户
+#
+#     boolean isAccountNonExpired(); //账户是否过期
+#
+#     boolean isAccountNonLocked(); //账户是否被锁定
+#
+#     boolean isCredentialsNonExpired();//凭证是否过期
+#
+#     boolean isEnabled(); //是否开启
+
+drop database user;
+create database user;
+use user;
+create table user_message(
+    id int primary key auto_increment,
+    username varchar(20) not null ,
+    password varchar(20) not null
+);
+
+create table user_status(
+    user_id int primary key ,
+    AccountNonExpired boolean default true not null,
+    AccountNonLocked boolean default true not null ,
+    CredentialsNonExpired boolean default true not null ,
+    Enabled boolean default true not null
+);
+
+insert into user_message(id, username, password) VALUE (1,'qianqiwei','qianqiwei');
+insert into user_message(username, password) values('liudehua','liudehua');
+insert into user_status(user_id, AccountNonExpired, AccountNonLocked, CredentialsNonExpired, Enabled) VALUES (1,true,true,true,true),
+                                                                                                             (2,true,true,true,true);
+select *from user_status
+
