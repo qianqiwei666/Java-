@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: server
+  cloud:
+    nacos:
+      discovery:
+        username: nacos
+        password: nacos
+        server-addr: 6.0.2.52:8848
+  datasource:
+    username: root
+    password: Qianqiwei2003817
+    url: jdbc:mysql://6.0.2.52:4306/db_storage?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+com:
+  qianqiwei:
+    redis:
+      port: 7379
+      address: 6.0.2.52
+server:
+  port: 8082

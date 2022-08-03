@@ -645,7 +645,7 @@ redisSearchCommand.createIndex(indexName,indexDefinition,schema);
 >    incr num
 >    #AOF中像这样重复的命令他会直接合并成,保留最后的结果: 
 >    set num 16
->                                                                
+>                                                                         
 >    ```
 
 #### 二、Redis4.0之后的解决方案
@@ -866,9 +866,9 @@ appendfsync no  #redis向AOF文件中写入数据的时候,首先会写入到缓
 >                     --cluster-replace
 >      backup         host:port backup_directory
 >      help
->          
+>                   
 >    For check, fix, reshard, del-node, set-timeout, info, rebalance, call, import, backup you can specify the host and port of any working node in the cluster.
->          
+>                   
 >    Cluster Manager Options:
 >      --cluster-yes  Automatic yes to cluster commands prompts
 >    ```
@@ -1164,7 +1164,9 @@ public class Demo {
 }
 ```
 
-## 四、击穿代码实现
+## 四、防止击穿代码实现
+
+### 一、方案一
 
 ```java
 @RestController
@@ -1267,4 +1269,57 @@ public class WebController {
 
 }
 
+```
+
+### 二、方案二
+
+```java
+@Service
+public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity>
+    implements CommodityService{
+    @Autowired
+    private RedissonClient redissonClient;
+
+    //缓存获取shop_id
+    public Shop findShop(String shop_id) {
+        String shop = (String) redissonClient.getMap("shops", new StringCodec()).get(shop_id);
+        //如果缓存中有数据直接返回。
+        if (shop != null) return JSON.parseObject(shop, Shop.class);
+        //如果没有数据从数据库中获取(lock)
+        RLock lock = redissonClient.getLock(shop_id + "_lock");
+        //锁的时间1000毫秒起步,每次叠加500毫秒
+        long lockTime = 1000;
+        while (true){
+            try {
+                lock.tryLock(lockTime, lockTime, TimeUnit.MILLISECONDS);
+                //时间叠加
+                lockTime+=500;
+                //双重判断
+                String shop01 = (String) redissonClient.getMap("shops", new StringCodec()).get(shop_id);
+                if (shop01 != null) return JSON.parseObject(shop01, Shop.class);
+                //从数据库中获取
+                Shop shop1 = getShop(shop_id);
+                //设置到数据库中
+                redissonClient.getMap("shops",new StringCodec()).put(shop_id, JSON.toJSON(shop1));
+                System.out.println("find to MySQL");
+                return shop1;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } finally {
+                if (lock.isHeldByCurrentThread()) lock.unlock();
+            }
+        }
+    }
+
+    public Shop getShop(String shop_id){
+        QueryWrapper<Commodity> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("cid",shop_id);
+        Commodity one = getOne(queryWrapper);
+        Shop shop=new Shop();
+        shop.setName(one.getCname());
+        shop.setPrice(one.getCrice());
+        return shop;
+    }
+
+}
 ```
