@@ -645,7 +645,7 @@ redisSearchCommand.createIndex(indexName,indexDefinition,schema);
 >    incr num
 >    #AOF中像这样重复的命令他会直接合并成,保留最后的结果: 
 >    set num 16
->                                                                         
+>                                                                            
 >    ```
 
 #### 二、Redis4.0之后的解决方案
@@ -866,9 +866,9 @@ appendfsync no  #redis向AOF文件中写入数据的时候,首先会写入到缓
 >                     --cluster-replace
 >      backup         host:port backup_directory
 >      help
->                   
+>                      
 >    For check, fix, reshard, del-node, set-timeout, info, rebalance, call, import, backup you can specify the host and port of any working node in the cluster.
->                   
+>                      
 >    Cluster Manager Options:
 >      --cluster-yes  Automatic yes to cluster commands prompts
 >    ```
@@ -1323,3 +1323,7 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
 }
 ```
+
+## 五、秒杀
+
+![秒杀](秒杀.svg)

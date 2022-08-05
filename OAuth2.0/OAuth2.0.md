@@ -2,76 +2,38 @@
 
 ## 1、授权码模式
 
-> 第三方Web服务器端应用与第三方原生App
+![授权模式](授权模式.svg)
 
-## 2、简化模式
-
-> 第三方单页面应用
-
-## 3、密码模式
+## 2、密码模式
 
 > 客户端携带用户名与密码从认证服务器授权得到token
 
 ![密码模式](密码模式.svg)
 
-## 4、客户端模式
+## 3、客户端模式
 
 > 没有用户参与的,完全信任的服务器端服务
 
 ![客户端模式](客户端模式.svg)
 
-# 一、OAuth2.0使用详情
+# 二、三方登录用例
 
-## 一、ClientDetails详解
+## 一、基本流程图
 
-```java
-public interface ClientDetails extends Serializable {
+![流程图](D:\Java笔记\Java-\OAuth2.0\流程图.svg)
 
-  
-   //客户端id 
-   String getClientId();
+## 二、支付宝登陆
 
-   //此客户端可以访问的资源。如果为空，调用者可以忽略。
-   Set<String> getResourceIds();
+### 一、官方文档
 
-   //服务端是否需要验证密文
-   boolean isSecretRequired();
+> 1. 第三方支付宝登录:[网站如何实现第三方支付宝登录 - 支付宝文档中心 (alipay.com)](https://opendocs.alipay.com/support/01rg6a)
+> 2. token获取以及用户信息获取API:[换取授权访问令牌接口 - 支付宝文档中心 (alipay.com)](https://opendocs.alipay.com/open/02ailc)
 
-   //获取客户端的密文   
-   String getClientSecret();
+### 二、准备工作
 
-   //是否需要获取客户端获取数据
-   boolean isScoped();
+> 1. 自行去官网创建网站应用
+> 2. 配置详情:[接入准备 - 支付宝文档中心 (alipay.com)](https://opendocs.alipay.com/open/218/105326?ref=api)
 
-   //获取客户端可访问的作用域 
-   Set<String> getScope();
+### 三、流程
 
-   //客户端被授权的授权类型
-   Set<String> getAuthorizedGrantTypes();
-
-   //获取客户端重定向uri
-   Set<String> getRegisteredRedirectUri();
-
-   //获取用户访问权限
-   Collection<GrantedAuthority> getAuthorities();
-
-   //设置token过期时间
-   Integer getAccessTokenValiditySeconds();
-   
-   //刷新token令牌有效期
-   Integer getRefreshTokenValiditySeconds();
-   
-   //测试客户是否需要用户批准特定范围。
-   boolean isAutoApprove(String scope);
-
-   //额外追加信息。
-   Map<String, Object> getAdditionalInformation();
-
-}
-```
-
-> 1. ClientId:用来标识客户端的Id
-> 2. Secret:请求加密密文。
-> 3. Scope:客户端请求数据的范围(哪部分请求可以获取)
-> 4. AuthorizedGrantType:授权类型,一般为空。
-> 5. Authorities:客户端的权限。
+![支付宝流程图](D:\Java笔记\Java-\OAuth2.0\支付宝流程图.svg)
